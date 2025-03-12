@@ -4,7 +4,7 @@ MAINTAINER Fabrizio Galiano <fabrizio.galiano@hotmail.com>
 
 #Gen Env
 ENV LVERS libpcap-1.7.4
-ENV DVERS daq-2.0.6
+ENV DVERS daq-2.0.7
 ENV HOST_INT ""
 ENV HOST_NAME ""
 
@@ -13,7 +13,7 @@ ENV PPORK_VERSION 0.7.0
 ENV PPORK_OINKCODE ""
 
 #Snort Env
-ENV SNVERS 2.9.9.0
+ENV SNVERS 2.9.20
 ENV SNORT_NET ""
 
 #Barnyard2 Env
@@ -26,39 +26,39 @@ ENV BARN_DBHOST ""
 # Install Dependencies
 RUN apt-get update -qq
 RUN apt-get -y install \
-        wget \
-        build-essential \
-        libtool \
-        automake \
-        gcc \
-        flex \
-        bison \
-        libnet1 \
-        libnet1-dev \
-        libpcre3 \
-        libpcre3-dev \
-        autoconf \
-        libcrypt-ssleay-perl \
-        libwww-perl \
-        git \
-        zlib1g \
-        zlib1g-dev \
-        libssl-dev \
-        libmysqlclient-dev \
-        imagemagick \
-        wkhtmltopdf \
-        libyaml-dev \
-        libxml2-dev \
-        libxslt1-dev \
-        openssl \
-        libreadline6-dev \
-        unzip \
-        libcurl4-openssl-dev \
-        libapr1-dev \
-        libaprutil1-dev \
-        supervisor \
-        net-tools \
-        gettext-base
+    wget \
+    build-essential \
+    libtool \
+    automake \
+    gcc \
+    flex \
+    bison \
+    libnet1 \
+    libnet1-dev \
+    libpcre3 \
+    libpcre3-dev \
+    autoconf \
+    libcrypt-ssleay-perl \
+    libwww-perl \
+    git \
+    zlib1g \
+    zlib1g-dev \
+    libssl-dev \
+    libmysqlclient-dev \
+    imagemagick \
+    wkhtmltopdf \
+    libyaml-dev \
+    libxml2-dev \
+    libxslt1-dev \
+    openssl \
+    libreadline6-dev \
+    unzip \
+    libcurl4-openssl-dev \
+    libapr1-dev \
+    libaprutil1-dev \
+    supervisor \
+    net-tools \
+    gettext-base
 
 #Install LIBDNET - LIBPCAP
 RUN apt-get install -y libdumbnet-dev libpcap-dev
@@ -86,7 +86,7 @@ RUN cd /tmp \
     && wget https://snort.org/downloads/snort/snort-$SNVERS.tar.gz \
     && tar zxf snort-$SNVERS.tar.gz \
     && cd snort-$SNVERS \
-    && ./configure --enable-sourcefire \
+    && ./configure --enable-sourcefire --disable-open-appid \
     && make && make install
 
 #User/group/dir for Snort
@@ -106,10 +106,11 @@ RUN cd /tmp \
     && cp pulledpork.pl /usr/sbin/ \
     && chmod 755 /usr/sbin/pulledpork.pl \
     && cp -r etc/* /etc/snort/ \
+    && cpan install Try::Tiny \
     && cpan install LWP::Protocol::https \
-    && cpan install Crypt::SSLeay  \
-    && cpan Mozilla::CA IO::Socket::SSL 
-    
+    && cpan install Crypt::SSLeay \
+    && cpan Mozilla::CA IO::Socket::SSL
+
 #Snort
 RUN cd /etc/snort \
     && chown -R snort:snort * \
